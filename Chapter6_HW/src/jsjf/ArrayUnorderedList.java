@@ -22,7 +22,7 @@ public class ArrayUnorderedList<T> extends ArrayList<T>
     /**
      * Creates an empty list using the specified capacity.
      *
-     * @param initialCapacity the intial size of the list
+     * @param initialCapacity the initial size of the list
      */
     public ArrayUnorderedList(int initialCapacity)
     {
@@ -37,6 +37,14 @@ public class ArrayUnorderedList<T> extends ArrayList<T>
     public void addToFront(T element)
     {
         // To be completed as a Programming Project
+        if(size() == list.length)
+            expandCapacity();
+        
+        for(int i = 1; i < size(); i++)
+            list[i] = list[i - 1];
+        list[0] = element;
+        rear++;
+        modCount++;
     }
 
     /**
@@ -47,6 +55,12 @@ public class ArrayUnorderedList<T> extends ArrayList<T>
     public void addToRear(T element)
     {
         // To be completed as a Programming Project
+        if(size() == list.length)
+            expandCapacity();
+        
+        list[rear] = element;
+        rear++;
+        modCount++;
     }
 
     /**
@@ -63,7 +77,7 @@ public class ArrayUnorderedList<T> extends ArrayList<T>
 
         int scan = 0;
 		
-		// find the insertion point
+        // find the insertion point
         while (scan < rear && !target.equals(list[scan])) 
             scan++;
       
@@ -72,13 +86,13 @@ public class ArrayUnorderedList<T> extends ArrayList<T>
     
         scan++;
 		
-		// shift elements up one
+        // shift elements up one
         for (int shift=rear; shift > scan; shift--)
             list[shift] = list[shift-1];
 
-		// insert element
-		list[scan] = element;
+        // insert element
+        list[scan] = element;
         rear++;
-		modCount++;
+        modCount++;
     }
 }

@@ -28,6 +28,21 @@ public class LinkedUnorderedList<T> extends LinkedList<T>
     public void addToFront(T element)
     {
         // To be completed as a Programming Project
+        LinearNode<T> newNode = new LinearNode<>(element);
+        
+        if(isEmpty())
+        {
+            head = newNode;
+            tail = newNode;
+        }
+        else
+        {
+            newNode.setNext(head);
+            head = newNode;
+        }
+        
+        count++;
+        modCount++;
     }
 	
 	/**
@@ -38,6 +53,21 @@ public class LinkedUnorderedList<T> extends LinkedList<T>
     public void addToRear(T element)
     {
         // To be completed as a Programming Project
+        LinearNode<T> newNode = new LinearNode<>(element);
+        
+        if(isEmpty())
+        {
+            head = newNode;
+            tail = newNode;
+        }
+        else
+        {
+            tail.setNext(newNode);
+            tail = newNode;
+        }
+        
+        count++;
+        modCount++;
     }
 	
 	
@@ -51,5 +81,18 @@ public class LinkedUnorderedList<T> extends LinkedList<T>
     public void addAfter(T element, T target)
     {
         // To be completed as a Programming Project
+        if(isEmpty())
+            throw new ElementNotFoundException("UnorderedList");
+        
+        LinearNode<T> newNode = new LinearNode<>(element);
+        LinearNode<T> current = head;
+        while(current != null && !current.getElement().equals(element))
+            current = current.getNext();
+        
+        newNode.setNext(current.getNext());
+        current.setNext(newNode);
+        
+        count++;
+        modCount++;
     }	
 }

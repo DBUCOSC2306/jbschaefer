@@ -31,5 +31,50 @@ public class LinkedOrderedList<T> extends LinkedList<T>
     public void add(T element)
     {
         // To be completed as a Programming Project
+        if(!(element instanceof Comparable))
+            throw new NonComparableElementException("OrderedList");
+        
+        Comparable<T> comparableElement = (Comparable<T>)element;
+        LinearNode<T> newNode = new LinearNode<>(element);
+        
+        //List is empty
+        if(isEmpty())
+        {
+            head = newNode;
+            tail = newNode;
+        }
+        
+        //New element is first
+        else if(comparableElement.compareTo(head.getElement()) <= 0)
+        {
+            newNode.setNext(head);
+            head = newNode;
+        }
+        
+        //New element is last
+        else if(comparableElement.compareTo(tail.getElement()) >= 0)
+        {
+            tail.setNext(newNode);
+            tail = newNode;
+        }
+        
+        //New element goes in the middle
+        else
+        {
+            LinearNode<T> current = head;
+            LinearNode<T> previous = null;
+            
+            while(comparableElement.compareTo(current.getElement()) > 0)
+            {
+                previous = current;
+                current = current.getNext();
+            }
+            
+            newNode.setNext(current);
+            previous.setNext(newNode);
+        }
+        
+        count++;
+        modCount++;
     }
 }

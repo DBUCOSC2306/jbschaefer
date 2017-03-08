@@ -18,7 +18,7 @@ public abstract class ArrayList<T> implements ListADT<T>, Iterable<T>
 	
     protected int rear;
     protected T[] list; 
-	protected int modCount;
+    protected int modCount;
 
     /**
      * Creates an empty list using the default capacity.
@@ -37,7 +37,7 @@ public abstract class ArrayList<T> implements ListADT<T>, Iterable<T>
     {
         rear = 0;
         list = (T[])(new Object[initialCapacity]);
-		modCount = 0;
+        modCount = 0;
     }
 
     /**
@@ -48,6 +48,7 @@ public abstract class ArrayList<T> implements ListADT<T>, Iterable<T>
     protected void expandCapacity()
     {
         // To be completed as a Programming Project
+        list = Arrays.copyOf(list, list.length * 2);
     }
 	
     /**
@@ -59,6 +60,14 @@ public abstract class ArrayList<T> implements ListADT<T>, Iterable<T>
     public T removeLast() throws EmptyCollectionException
     {
         // To be completed as a Programming Project
+        if(isEmpty())
+            throw new EmptyCollectionException("list");
+        
+        rear--;
+        T result = list[rear];
+        list[rear] = null;
+        modCount++;
+        return result;
     }
 
     /**
@@ -70,13 +79,23 @@ public abstract class ArrayList<T> implements ListADT<T>, Iterable<T>
     public T removeFirst() throws EmptyCollectionException
     {
         // To be completed as a Programming Project
+        if(isEmpty())
+            throw new EmptyCollectionException("list");
+        
+        T result = list[0];
+        rear--;
+        for(int i = 0; i < rear; i++)
+            list[i] = list[i+1];
+        list[rear] = null;
+        modCount++;
+        return result;
     }
 
     /**
      * Removes and returns the specified element.
      *
      * @param  element the element to be removed and returned from the list
-     * @return the removed elememt
+     * @return the removed element
      * @throws ElementNotFoundException if the element is not in the list
      */
     public T remove(T element)
@@ -95,7 +114,7 @@ public abstract class ArrayList<T> implements ListADT<T>, Iterable<T>
             list[scan] = list[scan+1];
  
         list[rear] = null;
-		modCount++;
+        modCount++;
 
         return result;
     }
@@ -111,6 +130,9 @@ public abstract class ArrayList<T> implements ListADT<T>, Iterable<T>
     public T first() throws EmptyCollectionException
     {
         // To be completed as a Programming Project
+        if(isEmpty())
+            throw new EmptyCollectionException("list");
+        return list[0];
     }
 
     /**
@@ -124,6 +146,9 @@ public abstract class ArrayList<T> implements ListADT<T>, Iterable<T>
     public T last() throws EmptyCollectionException
     {
         // To be completed as a Programming Project
+        if(isEmpty())
+            throw new EmptyCollectionException("list");
+        return list[rear - 1];
     }
 
     /**
@@ -168,6 +193,7 @@ public abstract class ArrayList<T> implements ListADT<T>, Iterable<T>
     public boolean isEmpty()
     {
         // To be completed as a Programming Project
+        return rear <= 0;
     }
  
     /**
@@ -178,6 +204,7 @@ public abstract class ArrayList<T> implements ListADT<T>, Iterable<T>
     public int size()
     {
         // To be completed as a Programming Project
+        return rear;
     }
 
     /**
@@ -188,6 +215,10 @@ public abstract class ArrayList<T> implements ListADT<T>, Iterable<T>
     public String toString()
     {
         // To be completed as a Programming Project
+        StringBuilder result = new StringBuilder();
+        for(int i = 0; i < rear; i++)
+            result.append(list[i]).append(" ");
+        return result.toString();
     }
 	
     /**
@@ -200,70 +231,69 @@ public abstract class ArrayList<T> implements ListADT<T>, Iterable<T>
         return new ArrayListIterator();
     }
 
-	/**
-	 * ArrayListIterator iterator over the elements of an ArrayList.
-	 */	
-	private class ArrayListIterator implements Iterator<T>
-	{
-		int iteratorModCount;
-		int current;
-		
-		/**
-		 * Sets up this iterator using the specified modCount.
-		 * 
-		 * @param modCount the current modification count for the ArrayList
-		 */
-		public ArrayListIterator()
-		{
-			iteratorModCount = modCount;
-			current = 0;
-		}
-		
-		/**
-		 * Returns true if this iterator has at least one more element
-		 * to deliver in the iteration.
-		 *
-		 * @return  true if this iterator has at least one more element to deliver
-		 *          in the iteration
-		 * @throws  ConcurrentModificationException if the collection has changed
-		 *          while the iterator is in use
-		 */
-		public boolean hasNext() throws ConcurrentModificationException
-		{
-			if (iteratorModCount != modCount)
-				throw new ConcurrentModificationException();
-			
-			return (current < rear);
-		}
-		
-		/**
-		 * Returns the next element in the iteration. If there are no
-		 * more elements in this iteration, a NoSuchElementException is
-		 * thrown.
-		 *
-		 * @return  the next element in the iteration
-		 * @throws  NoSuchElementException if an element not found exception occurs
-		 * @throws  ConcurrentModificationException if the collection has changed
-		 */
-		public T next() throws ConcurrentModificationException
-		{
-			if (!hasNext())
-				throw new NoSuchElementException();
-			
-			current++;
-			
-			return list[current - 1];
-		}
-		
-		/**
-		 * The remove operation is not supported in this collection.
-		 * 
-		 * @throws UnsupportedOperationException if the remove method is called
-		 */
-		public void remove() throws UnsupportedOperationException
-		{
-			throw new UnsupportedOperationException();
-		}
-		
-	}	
+    /**
+     * ArrayListIterator iterator over the elements of an ArrayList.
+     */	
+    private class ArrayListIterator implements Iterator<T>
+    {
+        int iteratorModCount;
+        int current;
+
+        /**
+         * Sets up this iterator using the specified modCount.
+         * 
+         * @param modCount the current modification count for the ArrayList
+         */
+        public ArrayListIterator()
+        {
+            iteratorModCount = modCount;
+            current = 0;
+        }
+
+        /**
+         * Returns true if this iterator has at least one more element
+         * to deliver in the iteration.
+         *
+         * @return  true if this iterator has at least one more element to deliver
+         *          in the iteration
+         * @throws  ConcurrentModificationException if the collection has changed
+         *          while the iterator is in use
+         */
+        public boolean hasNext() throws ConcurrentModificationException
+        {
+            if (iteratorModCount != modCount)
+                    throw new ConcurrentModificationException();
+
+            return (current < rear);
+        }
+
+        /**
+         * Returns the next element in the iteration. If there are no
+         * more elements in this iteration, a NoSuchElementException is
+         * thrown.
+         *
+         * @return  the next element in the iteration
+         * @throws  NoSuchElementException if an element not found exception occurs
+         * @throws  ConcurrentModificationException if the collection has changed
+         */
+        public T next() throws ConcurrentModificationException
+        {
+            if (!hasNext())
+                    throw new NoSuchElementException();
+
+            current++;
+
+            return list[current - 1];
+        }
+
+        /**
+         * The remove operation is not supported in this collection.
+         * 
+         * @throws UnsupportedOperationException if the remove method is called
+         */
+        public void remove() throws UnsupportedOperationException
+        {
+            throw new UnsupportedOperationException();
+        }
+    }	
 }
